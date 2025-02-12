@@ -16,7 +16,7 @@ This repository is created as a placeholder for the implementation details and s
 If you find our work useful in your research, please consider citing our paper once it is published. Citation details will be updated here after acceptance.
 
 ## Disclaimer
-The repository is currently empty and will be updated in the near future based on the outcomes of the review process.
+The repository currently only contains the CGNet model code and will be updated based on the review results in the near future.
 
 ## Contact
 If you have any questions, feel free to reach out to us via the contact information provided in the paper.
