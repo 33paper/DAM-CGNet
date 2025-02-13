@@ -1,24 +1,26 @@
-# Research Code Repository
+# DAM-CGNet: Semantic Segmentation-Based Approach for Valley-Bottom Extraction
 
-Welcome to the code repository for our research project. 
+This repository contains the implementation of **DAM-CGNet**, a deep learning model for extracting valley bottoms from **digital elevation models (DEMs)** using semantic segmentation.
 
-## Purpose
-This repository is created as a placeholder for the implementation details and source code related to our research. The code will be made publicly available if our paper is accepted for publication.
+> ⚠ **Note:** This repository currently includes partial code. The full implementation, including training scripts and dataset preprocessing, will be released upon paper acceptance.
 
-## Status
-- **Current Status**: Paper under review.
-- **Future Plans**: Upon acceptance, we will upload the complete codebase, including:
-  - Model implementation
-  - Experiment setup and configurations
-  - Evaluation metrics
+## Requirements
+
+To run this code, ensure your environment meets the following requirements:
+
+- Python **3.8.2**
+- PyTorch **1.7.2** with CUDA support
+- NVIDIA GPU with CUDA (for training)
+- Other dependencies (to be provided in `README` in the full release)
+
+
+## Code Availability
+
+- The current release includes the **model code**.
+- Training scripts, dataset preprocessing, and additional utilities will be added after **paper acceptance**.
 
 ## Citation
-If you find our work useful in your research, please consider citing our paper once it is published. Citation details will be updated here after acceptance.
 
-## Disclaimer
-The repository currently only contains the CGNet model code and will be updated based on the review results in the near future.
+If you find this work useful, please consider citing our paper (to be updated upon acceptance).
 
-## Contact
-If you have any questions, feel free to reach out to us via the contact information provided in the paper.
 
-Thank you for your interest in our work!
