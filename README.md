@@ -23,7 +23,7 @@ The training data for the model were sourced from the Ohio Statewide Imagery Pro
 
 - Run `python test.py` to predict on the trained DAM-CGNet.
 - The sample folder holds the test data.
-- Download the trained DAM-CGNet and put it in the weights folder to predict samples.
+- Download the trained DAM-CGNet and put it in the "weights" folder to predict samples.
 
 ### Download trained DAM-CGNet
 - The trained model is available for [Google Drive](https://drive.google.com/file/d/1ZGo6icASXNpLeoW1rqWfwlKi-PUkitWf/view?usp=drive_link). To ensure proper access and usage, please follow these steps:
