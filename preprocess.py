@@ -7,36 +7,6 @@ warnings.filterwarnings("ignore")
 import numpy as np
 
 
-def get_label_txt(data_Folder_url, label_Folder_url, labels_mark):
-    Train_Val_labelFile = open(os.path.join(label_Folder_url, "Train_Val_labelFile.txt"), mode='w')
-    Test_labelFile = open(os.path.join(label_Folder_url, "Test_labelFile.txt"), mode='w')
-    
-    for folders in labels_mark.keys():
-        a_class_folder = os.path.join(data_Folder_url, folders)
-        a_class_files_list = os.listdir(a_class_folder)
-        a_class_samples_num = 0
-        for imgs in a_class_files_list:
-            a_class_samples_num += 1
-            if a_class_samples_num > 10000:
-                break
-            r = random.rand()
-            if r < 0.9:
-                Train_Val_label = os.path.join(folders, imgs) + " " + str(labels_mark[folders]) + "\n"
-                Train_Val_labelFile.write(Train_Val_label)
-            else:
-                testSet_label = os.path.join(folders, imgs) + " " + str(labels_mark[folders]) + "\n"
-                Test_labelFile.write(testSet_label)
-
-    Train_Val_labelFile.close()
-    Test_labelFile.close()
-    print('save Train_Val_labelFile:{}'.format(os.path.join(label_Folder_url, "Train_Val_labelFile.txt")))
-    print('save Test_labelFile:{}'.format(os.path.join(label_Folder_url, "Test_labelFile.txt")))
-
-
-from scipy import signal
-from osgeo import gdal
-import richdem
-
 def readtif(DEM_filepath, is_resample=False, scale=1):
     dataset = gdal.Open(DEM_filepath)
     data = dataset.ReadAsArray()
