@@ -16,12 +16,6 @@ torch.cuda.empty_cache
 
 
 def dem2model_input(versions, dem_path, label_path=None, fine_size=512, padding=4):
-    """
-    @param: (str) dem_path dem_map [H+padding*2, W+padding*2]
-    @param: (str) label_path       [H+padding*2, W+padding*2]
-    return: model_input     (tensor) [1, channel, H, W]
-    return: SegmentationMetric label (tensor) [1, H, W]
-    """
     dem_map, proj, geotrans, data_type = readtif(dem_path)
     dem_img = dem_map[padding:padding * (-1), padding:padding * (-1)]
     dem = get_constant2onezero(dem_img)
@@ -30,16 +24,11 @@ def dem2model_input(versions, dem_path, label_path=None, fine_size=512, padding=
 
     if versions == '1.0':
         input_layer = [dem, tpi, slope]  # V1.0
-    # if versions == '2.0':
-    #     input_layer = [dem, slope]
-    # if versions == '4.0':
-    #     input_layer = [dem, curvature, slope, tpi]  # V4.0
 
     x_list = []
     for layer in input_layer:
         x_list.append(np.expand_dims(layer, axis=0))
     x_numpy = np.concatenate(x_list, axis=0)  # (C, H, W)
-    # ----------- crop_fine_size -------------
     offset = 0
     if min(x_numpy.shape[0], x_numpy.shape[0]) > fine_size:
         offset = int((min(x_numpy.shape[0], x_numpy.shape[0]) - fine_size) * 0.5)
@@ -98,10 +87,6 @@ def do_test(versions):
     in_channel, classNum = -1, -1
     if versions == '1.0':
         in_channel, classNum = 3, 2
-    if versions == '2.0':
-        in_channel, classNum = 2, 2
-    if versions == '4.0':
-        in_channel, classNum = 4, 3
     device_id = -1  # -1 means using CPU
     net_name = 'DAM_CGNet'
     save_dir = r'./weights'
@@ -117,7 +102,6 @@ def do_test(versions):
     
     label_path = r'./sample/label/test1.png'
 
-    # label_path = None
 
     print(dem_path)
     test_data, test_label = dem2model_input(versions, dem_path, label_path)
@@ -133,11 +117,6 @@ def do_test(versions):
 
 
 def finalResult_show(versions, model_output, test_data, test_label):
-    """
-    model_output     :  tensor (N, C, H, W)   N = 1, C = class_num
-    test_data        :  tensor (N, C, H, W)   C -> input_layer = [dem, tpi, slope]
-    test_label(None) :  tensor (N, H, W)      N = 1
-    """
     input_layer = np.array(torch.squeeze(test_data, dim=0))  # (C, H, W)
 
     model_output = torch.squeeze(model_output.cpu(), dim=0)  # (C, H, W)
@@ -153,7 +132,6 @@ def finalResult_show(versions, model_output, test_data, test_label):
         plt.subplot(3, 3, 7)
         plt.imshow(label), plt.colorbar(shrink=0.8)
         plt.title("label")
-    # else:
     plt.subplot(3, 3, 8)
     plt.imshow(pred_img), plt.colorbar(shrink=0.8)
     plt.title("predict_result")  # ,plt.xticks([]), plt.yticks([])
