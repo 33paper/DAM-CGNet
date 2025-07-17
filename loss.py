@@ -6,12 +6,6 @@ import numpy as np
 
 
 class dice_bce_loss(nn.Module):
-    def __init__(self, batch=True):
-        super(dice_bce_loss, self).__init__()
-        self.batch = batch
-        weight = [9.0]
-        class_weight = torch.FloatTensor(weight)
-        self.bce_loss = nn.BCEWithLogitsLoss(pos_weight= class_weight)
 
     def soft_dice_coeff(self, y_pred, y_true):
         y_pred = torch.nn.functional.softmax(y_pred, dim=1)
@@ -42,8 +36,6 @@ class SegmentationMetric(object):
         self.confusionMatrix = torch.zeros((self.numClass,) * 2)
 
     def pixelAccuracy(self):
-        # return all class overall pixel accuracy 正确的像素占总像素的比例
-        #  PA = acc = (TP + TN) / (TP + TN + FP + TN)
         acc = torch.diag(self.confusionMatrix).sum() / self.confusionMatrix.sum()
         return acc
 
@@ -57,14 +49,10 @@ class SegmentationMetric(object):
         return kappa
 
     def classPixelPrecision(self):
-        # return each category pixel accuracy (precision)
-        # precision = (TP) / TP + FP
         classPrecision = torch.diag(self.confusionMatrix) / self.confusionMatrix.sum(axis=0)  # [H,W]->[0,1]
         return classPrecision
 
     def classPixelRecall(self):
-        # return each category pixel accuracy (precision)
-        # precision = (TP) / TP + FN
         classRecall = torch.diag(self.confusionMatrix) / self.confusionMatrix.sum(axis=1)  # [H,W]->[0,1]
         return classRecall
 
@@ -108,9 +96,6 @@ class SegmentationMetric(object):
         return confusionMatrix
 
     def Frequency_Weighted_Intersection_over_Union(self):
-        """
-        FWIOU =     [(TP+FN)/(TP+FP+TN+FN)] *[TP / (TP + FP + FN)]
-        """
         freq = torch.sum(self.confusionMatrix, axis=1) / torch.sum(self.confusionMatrix)
         iu = np.diag(self.confusionMatrix) / (torch.sum(self.confusionMatrix, axis=1) +
                                               torch.sum(self.confusionMatrix, axis=0) - torch.diag(self.confusionMatrix))
@@ -142,24 +127,6 @@ class SegmentationMetric(object):
         self.reset()
         return evalus_res
 
-    def evalus2(self, imgPredict, imgLabel):
-        hist = self.addBatch(imgPredict, imgLabel)
-        Accuracy = self.pixelAccuracy()
-        kappa = self.Kappa()
-        Precision = self.classPixelPrecision()
-        Recall = self.classPixelRecall()
-        F1 = self.classPixelF1()
-        MPA = self.meanPixelPrecision()
-        IoU = self.IntersectionOverUnion()
-        mIoU = self.meanIntersectionOverUnion()
-        FWIoU = self.Frequency_Weighted_Intersection_over_Union()
-        evalus_res = 'Precision : {}, Recall : {}, F1 : {}, IoU : {}, Accuracy : {}, kappa : {}, MPA : {},  mIoU : {}, FWIoU : {}'.format(
-                                Precision.numpy(), Recall.numpy(), F1.numpy(), IoU.numpy(),
-                                Accuracy.numpy(), kappa.numpy(), MPA.numpy(), mIoU.numpy(), FWIoU.numpy())
-        write_res = '{},{},{},{},{}'.format(
-                                Accuracy.numpy(), kappa.numpy(), MPA.numpy(), mIoU.numpy(), FWIoU.numpy())
-        self.reset()
-        return write_res, evalus_res
 
 
 if __name__ == '__main__':
