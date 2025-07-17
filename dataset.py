@@ -10,11 +10,6 @@ from preprocess import *
 
 
 def mask2one_hot(num_classes, label, h, w):
-   """
-   input  =  label:  # tensor(1, h, w)  type = int8
-   output = onehot:  # tensor(num_classes, h, w)
-   class_id = 0,1,2,3... num_classes-1
-   """
    one_hots = []
    for i in range(num_classes):
        tmplate = torch.ones(1, h, w)
@@ -38,12 +33,6 @@ def get_data_list(dem_data_folder, target_data_folder):
 
 class DTM_Dataset(Dataset):
     def __init__(self, all_data, fine_size, num_classes):
-        """
-        @dem_Map: numpy_array, (H+padding*2, W+padding*2) must >= fine_size+padding*2
-        dem_img = np.pad(dem_img, pad_width, 'constant/edge/linear_ramp/max/min/mean', constant_values=np.inf)
-        @dem_img: numpy_array, (H, W) more bigger
-        x_numpy, y_numpy == into model as fine_size
-        """
         self.all_data = all_data
         self.padding = 4
         self.fine_size = fine_size   # (512,512) --- H W
@@ -68,13 +57,11 @@ class DTM_Dataset(Dataset):
         for layer in input_layer:
             x_list.append(np.expand_dims(layer, axis=0))
         x_numpy = np.concatenate(x_list, axis=0)        # (C, H, W)
-        # --------------------------------------------------------------
         target_map = cv2.imread(target_path, cv2.IMREAD_GRAYSCALE)       # read label file 8bit gray figure
         target_map[target_map > 0] = 1
         if len(target_map.shape) == 2:
             y_numpy = target_map[self.padding:self.padding*(-1), self.padding:self.padding*(-1)]
             y_numpy = np.expand_dims(y_numpy, axis=0)   # (C, H, W)
-        # --------------------------------------------------------------
         random_row = int(random.random()*(dem_img.shape[0] - self.fine_size[0]))
         random_col = int(random.random()*(dem_img.shape[1] - self.fine_size[1]))
         x_numpy = x_numpy[:, random_row:random_row + self.fine_size[0], random_col:random_col + self.fine_size[1]]
